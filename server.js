@@ -17,4 +17,5 @@ app.listen(port, () => {
 
 app.get('/aircrafts', db.getUsers)
 app.get('/aircrafts/code', db.getUserById)
+//Change
 app.get('/airports', db.getAirports)
