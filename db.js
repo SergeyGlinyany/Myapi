@@ -7,8 +7,8 @@ const pool = new Pool({
   port: 5432,
 })
 
-const getUsers = (request, response) => {
-    pool.query('SELECT * FROM bookings.aircrafts_data', (error, results) => {
+const getAllRec = (request, response) => {
+    pool.query('SELECT get_all_rec() as object;', (error, results) => {
       if (error) {
         throw error
       }
@@ -16,22 +16,14 @@ const getUsers = (request, response) => {
     })
   }
 
-  const getAirports = (request, response) => {
-    pool.query('SELECT * FROM bookings.airports_data', (error, results) => {
-      if (error) {
-        throw error
-      }
-      response.status(200).json(results.rows)
-    })
-  }
 
-  const getUserById = (request, response) => {
-    //const code = parseInt(request.params.code)
-    const { code }  = request.body
+
+  const getRecById = (request, response) => {
+    const id   = request.query.id;
   
     pool.query(
-        'SELECT * FROM bookings.aircrafts_data WHERE aircraft_code = $1',
-     [code], 
+        'SELECT get_part_rec($1) as object;',
+     [id],
      (error, results) => {
       if (error) {
         throw error
@@ -40,12 +32,52 @@ const getUsers = (request, response) => {
     })
   }
 
+  const postNewRec = (request, response) => {
+    const {name, duration, price, profit, description, stock_type, rec_industry, rec }   = request.body;
+  
+    pool.query(
+        'call postnewrec($1,$2,$3,$4,$5,$6,$7,$8);',
+     [name, duration, price, profit, description, stock_type, rec_industry, rec],
+     (error, results) => {
+      if (error) {
+        throw error
+      }
+      response.status(200).json(results.rows)
+    })
+  }
+
+  const deleteRec = (request, response) => {
+    const id   = request.query.id;
+  
+    pool.query(
+        'call deleterec($1);',
+     [id],
+     (error, results) => {
+      if (error) {
+        throw error
+      }
+      response.send({message: `Рекомендация с id = ${id} удалена успешно`});
+    })
+  }
+
+  const updateRec = (request, response) => {
+    const {name, duration, price, profit, description, stock_type, rec_industry, rec }   = request.body;
+    const id   = request.query.id;
+    pool.query(
+        'call updaterec($1,$2,$3,$4,$5,$6,$7,$8, $9);',
+     [id, name, duration, price, profit, description, stock_type, rec_industry, rec],
+     (error, results) => {
+      if (error) {
+        throw error
+      }
+      response.send({message: `Рекомендация с id = ${id} обновлена успешно`});
+    })
+  }
+
   module.exports = {
-    getUsers,
-    getUserById,
-    getAirports,
-    //createUser,
-    //change
-    //updateUser,
-    //deleteUser,
+    getAllRec,
+    getRecById,
+    postNewRec,
+    deleteRec,
+    updateRec,
   }

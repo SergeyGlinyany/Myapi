@@ -15,7 +15,12 @@ app.listen(port, () => {
   console.log(`App running on port ${port}.`)
 })
 
-app.get('/aircrafts', db.getUsers)
-app.get('/aircrafts/code', db.getUserById)
-//Change
-app.get('/airports', db.getAirports)
+app.get('/api/v1/recommendations', db.getAllRec)
+
+app.get('/api/v1/recommendations/id', db.getRecById)
+
+app.post('/api/v1/recommendations/postNewRec', db.postNewRec)
+
+app.delete('/api/v1/recommendations/deleteRec/id', db.deleteRec)
+
+app.patch('/api/v1/recommendations/updateRec/id', db.updateRec)
