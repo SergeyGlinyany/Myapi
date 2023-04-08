@@ -56,7 +56,7 @@ const getAllRec = (request, response) => {
       if (error) {
         throw error
       }
-      response.send({message: `Рекомендация с id = ${id} удалена успешно`});
+      response.send({message: `Запрос отработал`});
     })
   }
 
